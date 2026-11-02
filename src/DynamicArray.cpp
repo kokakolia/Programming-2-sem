@@ -1,9 +1,16 @@
 #include "../include/DynamicArray.h"
 #include <iostream>
 #include <algorithm>
+#include <stdexcept>
 using namespace std;
 
-DynamicArray::DynamicArray(int n) : data(new int[n]()), size(n) {}
+DynamicArray::DynamicArray(int n){
+    if (n < 0){
+        throw invalid_argument("Size cannot be negative");
+    }
+    size = n;
+    data = new int[size]();
+}
 
 DynamicArray::~DynamicArray() {
     delete[] data;
@@ -17,16 +24,20 @@ void DynamicArray::show(){
 }
 
 void DynamicArray::set(int index, int value){
-    if (0 <= index && index < size && -100 <= value && value <= 100){
-        data[index] = value;
+    if (index < 0 || index >= size){
+        throw out_of_range("Index out of range");
     }
+    if (value < -100 || value > 100){
+        throw invalid_argument("Value must be from -100 to 100");
+    }
+    data[index] = value;
 }
 
-int DynamicArray::get(int index) const {
-    if (0 <= index && index < size){
-        return data[index];
+int DynamicArray::get(int index) {
+    if (index < 0 || index >= size){
+        throw out_of_range("Index out of range");
     }
-    return 0;
+    return data[index];
 }
 
 DynamicArray::DynamicArray(DynamicArray& other){
@@ -38,17 +49,18 @@ DynamicArray::DynamicArray(DynamicArray& other){
 }
 
 void DynamicArray::append(int value){
-    if (-100 <= value && value <= 100){
-        int* newdata = new int[size+1];
-        for (int i = 0; i < size; i++) {
-            newdata[i] = data[i];
-        }
-        newdata[size] = value;
-
-        delete[] data;
-        data = newdata;
-        size++;
+    if (value < -100 || value > 100){
+        throw invalid_argument("Value must be from -100 to 100");
     }
+    int* newdata = new int[size+1];
+    for (int i = 0; i < size; i++) {
+        newdata[i] = data[i];
+    }
+    newdata[size] = value;
+
+    delete[] data;
+    data = newdata;
+    size++;
 }
 
 void DynamicArray::add(DynamicArray& other){

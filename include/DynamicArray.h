@@ -11,7 +11,7 @@ public:
 
     void show();
     void set(int index, int value);
-    int get(int index) const;
+    int get(int index);
     void append(int value);
     void add(DynamicArray& other);
     void sub(DynamicArray& other);
