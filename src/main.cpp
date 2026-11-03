@@ -1,77 +1,66 @@
 #include "../include/DynamicArray.h"
 #include <iostream>
-#include <stdexcept>
-#include <new>
+#include <string>
 using namespace std;
 
 int main() {
-    DynamicArray a(3);
-    a.show();
-    a.set(0, 10);
-    a.set(1, 20);
-    a.set(2, -30);
-    a.show();
+    DynamicArray<int> a(2);
+    a.set(0, 3);
+    a.set(1, 4);
+    cout << "a: " << a << endl;
 
-    cout << a.get(1) << endl;
+    DynamicArray<int> b(2);
+    b.set(0, 0);
+    b.set(1, 0);
+    cout << "b: " << b << endl;
+    cout << "distance: " << a.distance(b) << endl;
+
+    DynamicArray<int> copy = a;
+    copy.append(10);
+    cout << "copy: " << copy << endl;
+
+    a.add(b);
+    a.sub(b);
+    a.show();
 
     try {
-        a.set(5, 1);
+        a.set(0, 101);
     }
-    catch (const out_of_range& e){
+    catch (invalid_argument& e){
         cout << e.what() << endl;
     }
 
     try {
-        a.get(-1);
+        a.get(2);
     }
-    catch (const out_of_range& e){
+    catch (out_of_range& e){
         cout << e.what() << endl;
     }
 
     try {
-        a.set(0, 500);
+        a.distance(copy);
     }
-    catch (const invalid_argument& e){
+    catch (invalid_argument& e){
         cout << e.what() << endl;
     }
-    a.show();
 
-    DynamicArray b = a;
-    b.set(0, 99);
-    cout << "a: ";
-    a.show();
-    cout << "b: ";
-    b.show();
+    DynamicArray<double> numbers(2);
+    numbers.set(0, 150.5);
+    numbers.set(1, 2.5);
+    cout << "numbers: " << numbers << endl;
 
-    a.append(40);
-    try {
-        a.append(200);
-    }
-    catch (const invalid_argument& e){
-        cout << e.what() << endl;
-    }
-    a.show();
-
-    DynamicArray c(2);
-    c.set(0, 1);
-    c.set(1, 2);
-    cout << "c: ";
-    c.show();
-
-    a.add(c);
-    a.show();
-
-    a.sub(c);
-    a.show();
-
-    c.add(a);
-    c.show();
+    DynamicArray<string> words(2);
+    words.set(0, "hello");
+    words.set(1, "world");
+    words.append("C++");
+    cout << "words: " << words << endl;
 
     try {
-        DynamicArray d(-1);
+        words.distance(words);
     }
-    catch (const invalid_argument& e){
+    catch (bad_typeid& e){
         cout << e.what() << endl;
     }
+
     return 0;
 }
