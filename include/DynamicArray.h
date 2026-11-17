@@ -13,6 +13,12 @@ class DynamicArray {
     T* data;
     int size;
 
+    void checkIndex(int index){
+        if (index < 0 || index >= size){
+            throw out_of_range("Index out of range");
+        }
+    }
+
     void checkValue(T value, true_type){
         if (static_cast<long double>(value) < -100 || static_cast<long double>(value) > 100){
             throw invalid_argument("Value must be from -100 to 100");
@@ -38,6 +44,28 @@ class DynamicArray {
     }
 
 public:
+    class Element {
+        DynamicArray& array;
+        int index;
+
+    public:
+        Element(DynamicArray& array, int index) : array(array), index(index) {}
+
+        Element& operator=(T value){
+            array.set(index, value);
+            return *this;
+        }
+
+        Element& operator=(const Element& other){
+            array.set(index, other.array.get(other.index));
+            return *this;
+        }
+
+        operator T(){
+            return array.get(index);
+        }
+    };
+
     DynamicArray(int n){
         if (n < 0){
             throw invalid_argument("Size cannot be negative");
@@ -66,18 +94,19 @@ public:
     }
 
     void set(int index, T value){
-        if (index < 0 || index >= size){
-            throw out_of_range("Index out of range");
-        }
+        checkIndex(index);
         checkValue(value, is_integral<T>());
         data[index] = value;
     }
 
     T get(int index) {
-        if (index < 0 || index >= size){
-            throw out_of_range("Index out of range");
-        }
+        checkIndex(index);
         return data[index];
+    }
+
+    Element operator[](int index){
+        checkIndex(index);
+        return Element(*this, index);
     }
 
     void append(T value){
@@ -103,6 +132,62 @@ public:
         for (int i = 0; i < min(other.size, size); i++){
             data[i] -= other.data[i];
         }
+    }
+
+    bool operator==(DynamicArray& other){
+        if (size != other.size){
+            return false;
+        }
+        for (int i = 0; i < size; i++){
+            if (!(data[i] == other.data[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool operator!=(DynamicArray& other){
+        return !(*this == other);
+    }
+
+    DynamicArray& operator+=(DynamicArray& other){
+        add(other);
+        return *this;
+    }
+
+    DynamicArray& operator-=(DynamicArray& other){
+        sub(other);
+        return *this;
+    }
+
+    DynamicArray& operator+=(T value){
+        for (int i = 0; i < size; i++){
+            data[i] += value;
+        }
+        return *this;
+    }
+
+    DynamicArray& operator-=(T value){
+        for (int i = 0; i < size; i++){
+            data[i] -= value;
+        }
+        return *this;
+    }
+
+    T* begin(){
+        return data;
+    }
+
+    T* end(){
+        return data + size;
+    }
+
+    const T* begin() const {
+        return data;
+    }
+
+    const T* end() const {
+        return data + size;
     }
 
     double distance(DynamicArray& other){

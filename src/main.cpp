@@ -5,62 +5,58 @@ using namespace std;
 
 int main() {
     DynamicArray<int> a(2);
-    a.set(0, 3);
-    a.set(1, 4);
+    a[0] = 3;
+    a[1] = 4;
     cout << "a: " << a << endl;
-
-    DynamicArray<int> b(2);
-    b.set(0, 0);
-    b.set(1, 0);
-    cout << "b: " << b << endl;
-    cout << "distance: " << a.distance(b) << endl;
-
-    DynamicArray<int> copy = a;
-    copy.append(10);
-    cout << "copy: " << copy << endl;
-
-    a.add(b);
-    a.sub(b);
-    a.show();
+    int first = a[0];
+    cout << "a[0]: " << first << endl;
 
     try {
-        a.set(0, 101);
-    }
-    catch (invalid_argument& e){
-        cout << e.what() << endl;
-    }
-
-    try {
-        a.get(2);
+        a[2] = 10;
     }
     catch (out_of_range& e){
         cout << e.what() << endl;
     }
 
     try {
-        a.distance(copy);
+        a[0] = 101;
     }
     catch (invalid_argument& e){
         cout << e.what() << endl;
     }
 
-    DynamicArray<double> numbers(2);
-    numbers.set(0, 150.5);
-    numbers.set(1, 2.5);
-    cout << "numbers: " << numbers << endl;
+    DynamicArray<int> copy = a;
+    cout << boolalpha;
+    cout << "a == copy: " << (a == copy) << endl;
+    copy[0] = 5;
+    cout << "a != copy: " << (a != copy) << endl;
+
+    DynamicArray<int> b(1);
+    b[0] = 10;
+    a += b;
+    cout << "a += b: " << a << endl;
+    a -= b;
+    cout << "a -= b: " << a << endl;
+
+    a += 2;
+    cout << "a += 2: " << a << endl;
+    a -= 1;
+    cout << "a -= 1: " << a << endl;
+
+    for (auto& x : a){
+        x *= 2;
+    }
+    cout << "after loop: ";
+    const auto& view = a;
+    for (const auto& x : view){
+        cout << x << " ";
+    }
+    cout << endl;
 
     DynamicArray<string> words(2);
-    words.set(0, "hello");
-    words.set(1, "world");
-    words.append("C++");
+    words[0] = "hello";
+    words[1] = words[0];
     cout << "words: " << words << endl;
-
-    try {
-        words.distance(words);
-    }
-    catch (bad_typeid& e){
-        cout << e.what() << endl;
-    }
 
     return 0;
 }
